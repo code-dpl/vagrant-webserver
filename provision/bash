@@ -1,0 +1,79 @@
+#!/bin/bash
+# This script installs Puppet on the client OS.  All configuration should be done in Puppet, so all this should do is get the OS to the point that a Puppet run can complete successfully
+
+set -u
+set -e
+
+#Functions for OS-specific tasks
+
+RedHat() {
+# Add the Puppet repositories to /etc/yum.repos.d
+  if [ ! -f '/etc/yum.repos.d/puppet.repo' ]
+  then
+    echo "Adding Puppet repositories"
+    echo -e "[puppet-products]\nname=puppet-products\nbaseurl=http://yum.puppetlabs.com/el/\$releasever/products/\$basearch\ngpgcheck=1\nenabled=1" > /etc/yum.repos.d/puppet.repo
+    echo -e "[puppet-dependencies]\nname=puppet-dependencies\nbaseurl=http://yum.puppetlabs.com/el/\$releasever/dependencies/\$basearch\ngpgcheck=1\nenabled=1" >> /etc/yum.repos.d/puppet.repo
+  fi
+# Install Puppet.  The rpm command here should return 0 if it's installed, 1 if it isn't
+# Since this may return a non-zero result, set +e is temporarily used so that the script doesn't bomb out
+set +e
+  rpm -q puppet
+# $? is a special variable that contains the return/exit code of the command that was last run.  It should be an integer
+  installed=$?
+# Turn error-crashing back on.  If I'd done this right after the rpm command, then $? would contain the return code of the "set" command, rather than the rpm command
+set -e
+# Only try to install the package if it isn't already
+  if [ $installed -ne 0 ]
+  then
+    echo "Importing puppetlabs GPG key"
+    rpm --import http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs
+    echo "Installing Puppet"
+    yum -y install puppet
+  fi
+}
+
+Debian() {
+  if [ ! -f '/etc/apt/sources.list.d/puppet.list' ]
+  then
+    echo "Adding Puppet repository"
+    echo 'deb http://apt.puppetlabs.com trusty main' > /etc/apt/sources.list.d/puppet.list
+  fi
+set +e
+  dpkg -l puppet
+  installed=$?
+set -e
+  if [ $installed -ne 0 ]
+  then
+    echo "Importing puppetlabs GPG key"
+    apt-key add /vagrant/provision/puppet/pubkey.gpg
+    echo "Installing Puppet"
+    apt-get update
+    apt-get -y install puppet
+  fi
+}
+
+# Try to determine which OS is running
+# It's slightly lazy to determine what OS is running based solely on whether files exist on the machine, but it's the method I see used most often, and it's harder than you might think
+if [ -f '/etc/debian_version' ]
+then
+  osfamily='Debian'
+elif [ -f '/etc/redhat-release' ]
+then
+  osfamily='RedHat'
+else
+  osfamily='unsupported'
+fi
+
+# Run the function that corresponds to the detected OS
+case $osfamily in
+  RedHat)
+    RedHat
+  ;;
+  Debian)
+    Debian
+  ;;
+  *)
+    echo "Unsupported OS."
+    exit 1
+  ;;
+esac
