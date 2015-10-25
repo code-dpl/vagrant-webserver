@@ -1,6 +1,6 @@
 ## 2015/11/9 - Build Your Own Web Server with Vagrant, VirtualBox, and Puppet
 
-If you  have any questions or problems, please post them on [the Meetup site](http://www.meetup.com/learntocodedenver), since other people might have the same ones.
+If you  have any questions or problems, please post them on [the Meetup site](http://www.meetup.com/learntocodedenver/events/226301743/), since other people might have the same ones.
 
 ### What You Need
 - A laptop with a CPU that supports hardware virtualization.  Most do, but it also needs to be enabled in the BIOS.  If you're not sure, you can continue with the steps and see if it fails.
