@@ -1,24 +1,16 @@
-## 2015/11/9 - Build Your Own Web Server with Vagrant, VirtualBox, and Puppet
+Installs Apache, MySQL, PHP, and Drupal in a Vagrant environment  
 
-If you  have any questions or problems, please post them on [the Meetup site](http://www.meetup.com/learntocodedenver/events/226301743/), since other people might have the same ones.
+This is a variant of [vagrant-webserver](https://github.com/code-dpl/vagrant-webserver), branch 2015-10-24, with a few demonstrative changes:
 
-### What You Need
-- A laptop with a CPU that supports hardware virtualization.  Most do, but it also needs to be enabled in the BIOS.  If you're not sure, you can continue with the steps and see if it fails.
-- Since our time in the IdeaLab is limited and so is their bandwidth, complete the What to Do section in advance.
+ - Vagrant's Puppet provisioner functionality, previously in the Vagrantfile, has been replaced with a line in provision/bash
+ - The /vagrant URL is no longer created/accessible
+ - The init.pp instantiates the webserver::drupal class and passes parameters to it
+ - drupal.pp has been added to the webserver module, defining the parameterized webserver::drupal class
+ - Doesn't include the DPL favicon.ico
+ - Uses .gitignore to prevent checkins of the .vagrant directory that's created when doing `vagrant up`
 
-### What to Do
-1. Download and install [Git](https://git-scm.com/downloads).
-    - On Windows, in the "Adjusting your PATH environment" part of the install, select the 3rd option, "Use Git and optional Unix tools from the Windows Command Prompt."  The defaults for the other options are probably good, unless you find yourself running into problems with line endings (line feed vs. carriage-return line feed.  It doesn't matter for this class)
-1. Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-1. Download and install [Vagrant](http://www.vagrantup.com/downloads).
-1. Open a command line/terminal window.
-1. Clone this repository.  
-`git clone https://github.com/code-dpl/vagrant-webserver`
-1. Change to the new directory.  
-`cd vagrant-webserver`
-1. Bring up the environment.  This will probably take 20-30 minutes.  
-`vagrant up`
-1. At this point, you should be able to access the 2 web servers that were just created.  The directory listings will be identical, as they're both pointing to the same place.
-http://10.14.1.7/vagrant  
-http://10.14.1.8/vagrant
-1. Feel free to mess around with things, if you want.  When you're done, type `vagrant halt` to stop the running VMs.
+To use:
+
+1. Install VirtualBox and Vagrant, then run `vagrant up`  
+1. Open a web browser to http://$ip/drupal.  
+IP addresses are in the Vagrantfile, e.g. [http://10.14.1.9/drupal](http://10.14.1.9/drupal)
