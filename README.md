@@ -1,6 +1,6 @@
 Installs Apache, MySQL, PHP, and Drupal in a Vagrant environment  
 
-This is a variant of [vagrant-webserver](https://github.com/code-dpl/vagrant-webserver), branch 2015-10-24, with a few demonstrative changes:
+This is a variant of [vagrant-webserver, branch 2015-10-24](https://github.com/code-dpl/vagrant-webserver/tree/2015-10-24), with a few demonstrative changes:
 
  - Vagrant's Puppet provisioner functionality, previously in the Vagrantfile, has been replaced with a line in provision/bash
  - The /vagrant URL is no longer created/accessible
